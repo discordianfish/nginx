@@ -519,16 +519,9 @@ ngx_http_image_process(ngx_http_request_t *r)
     }
 
     ctx->max_width = ngx_http_image_filter_get_value(r, conf->wcv, conf->width);
-    if (ctx->max_width == 0) {
-        return NULL;
-    }
 
     ctx->max_height = ngx_http_image_filter_get_value(r, conf->hcv,
                                                       conf->height);
-    if (ctx->max_height == 0) {
-        return NULL;
-    }
-
     if (rc == NGX_OK
         && ctx->width <= ctx->max_width
         && ctx->height <= ctx->max_height
@@ -795,13 +788,13 @@ transparent:
 
     if (conf->filter == NGX_HTTP_IMAGE_RESIZE) {
 
-        if ((ngx_uint_t) dx > ctx->max_width) {
+        if (ctx->max_width > 0 && (ngx_uint_t) dx > ctx->max_width) {
             dy = dy * ctx->max_width / dx;
             dy = dy ? dy : 1;
             dx = ctx->max_width;
         }
 
-        if ((ngx_uint_t) dy > ctx->max_height) {
+        if (ctx->max_height > 0 && (ngx_uint_t) dy > ctx->max_height) {
             dx = dx * ctx->max_height / dy;
             dx = dx ? dx : 1;
             dy = ctx->max_height;
